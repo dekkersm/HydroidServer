@@ -191,48 +191,68 @@ const envData = [
 
 exports.getPhCurrent = (req, res, next) => {
     res.json(
-        phdata.reduce((a,b)=>a.id>b.id?a:b)
+        phdata.reduce((a, b) => a.id > b.id ? a : b)
     )
 };
 
 exports.getPhHistory = (req, res, next) => {
+    let filteredData = phdata;
+    if (req.from) {
+        let to = req.to ? req.to : new Date().toUTCString();
+        filteredData.filter(d => d.date > req.from && d.date < to);
+    }
     res.json({
-        "phData": phdata
+        "phData": filteredData
     })
 }
 
 exports.getTdsCurrent = (req, res, next) => {
     res.json(
-        tdsData.reduce((a,b)=>a.id>b.id?a:b)
+        tdsData.reduce((a, b) => a.id > b.id ? a : b)
     )
 };
 
 exports.getTdsHistory = (req, res, next) => {
+    let filteredData = tdsData;
+    if (req.from) {
+        let to = req.to ? req.to : new Date().toUTCString();
+        filteredData.filter(d => d.date > req.from && d.date < to);
+    }
     res.json({
-        "tdsData": tdsData
+        "tdsData": filteredData
     })
 }
 
 exports.getWaterCurrent = (req, res, next) => {
     res.json(
-        waterData.reduce((a,b)=>a.id>b.id?a:b)
+        waterData.reduce((a, b) => a.id > b.id ? a : b)
     )
 };
 
 exports.getWaterHistory = (req, res, next) => {
+    let filteredData = waterData;
+    if (req.from) {
+        let to = req.to ? req.to : new Date().toUTCString();
+        filteredData.filter(d => d.date > req.from && d.date < to);
+    }
     res.json({
-        "waterData": waterData
+        "waterData": filteredData
     })
 }
 
 exports.getEnvCurrent = (req, res, next) => {
     res.json(
-        envData.reduce((a,b)=>a.id>b.id?a:b)
+        envData.reduce((a, b) => a.id > b.id ? a : b)
     )
 };
 
 exports.getEnvHistory = (req, res, next) => {
+    let filteredData = envData;
+    if (req.from) {
+        let to = req.to ? req.to : new Date().toUTCString();
+        filteredData.filter(d => d.date > req.from && d.date < to);
+    }
     res.json({
-        "envData": envData
+        "envData": filteredData
     })
 }
