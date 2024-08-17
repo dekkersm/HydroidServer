@@ -12,4 +12,12 @@ router.get('/tds/current', sensorController.getTdsCurrent);
 
 router.get('/tds/history', sensorController.getTdsHistory);
 
+router.get('/water/current', sensorController.getWaterCurrent);
+
+router.get('/water/history', sensorController.getWaterHistory);
+
+router.get('/env/current', sensorController.getEnvCurrent);
+
+router.get('/env/history', sensorController.getEnvHistory);
+
 module.exports = router;
