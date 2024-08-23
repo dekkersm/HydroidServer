@@ -27,3 +27,8 @@ exports.getConfig = (req, res, next) => {
         "confData": confData
     })
 };
+
+exports.getConfigOne = (req, res, next) => {
+    let single = confData.filter(c=> c.type == req.params.type)
+    res.json(single)
+};

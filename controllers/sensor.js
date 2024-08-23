@@ -197,9 +197,9 @@ exports.getPhCurrent = (req, res, next) => {
 
 exports.getPhHistory = (req, res, next) => {
     let filteredData = phdata;
-    if (req.params.from) {
-        let to = req.params.to ? req.params.to : new Date().getTime();
-        filteredData.filter(d => d.date > req.params.from && d.date < to);
+    if (req.query.from) {
+        let to = req.query.to ? req.query.to : new Date().getTime();
+        filteredData.filter(d => d.date > req.query.from && d.date < to);
     }
     res.json({
         "phData": filteredData
@@ -214,9 +214,9 @@ exports.getTdsCurrent = (req, res, next) => {
 
 exports.getTdsHistory = (req, res, next) => {
     let filteredData = tdsData;
-    if (req.params.from) {
-        let to = req.params.to ? req.params.to : new Date().getTime();
-        filteredData.filter(d => d.date > req.params.from && d.date < to);
+    if (req.query.from) {
+        let to = req.query.to ? req.query.to : new Date().getTime();
+        filteredData.filter(d => d.date > req.query.from && d.date < to);
     }
     res.json({
         "tdsData": filteredData
@@ -231,9 +231,9 @@ exports.getWaterCurrent = (req, res, next) => {
 
 exports.getWaterHistory = (req, res, next) => {
     let filteredData = waterData;
-    if (req.params.from) {
-        let to = req.params.to ? req.params.to : new Date().getTime();
-        filteredData.filter(d => d.date > req.params.from && d.date < to);
+    if (req.query.from) {
+        let to = req.query.to ? req.query.to : new Date().getTime();
+        filteredData.filter(d => d.date > req.query.from && d.date < to);
     }
     res.json({
         "waterData": filteredData
@@ -248,9 +248,9 @@ exports.getEnvCurrent = (req, res, next) => {
 
 exports.getEnvHistory = (req, res, next) => {
     let filteredData = envData;
-    if (req.params.from) {
-        let to = req.params.to ? req.params.to : new Date().getTime();
-        filteredData.filter(d => d.date > req.params.from && d.date < to);
+    if (req.query.from) {
+        let to = req.query.to ? req.query.to : new Date().getTime();
+        filteredData.filter(d => d.date > req.query.from && d.date < to);
     }
     res.json({
         "envData": filteredData
