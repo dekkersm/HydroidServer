@@ -1,42 +1,36 @@
-const confData = [
-    {
-        id: 1,
-        type: "phMaxLimit",
-        value: 6.3,
-        recheckTimeout: 30,
-        pumpTime: 120
-    },
-    {
-        id: 1,
-        type: "phMinLimit",
-        value: 5.4,
-        recheckTimeout: 30,
-        pumpTime: 120
-    },
-    {
-        id: 1,
-        type: "tdsMinLimit",
-        value: 780,
-        recheckTimeout: 30,
-        pumpTime: 120
-    }
-];
+const Constant = require('../models/constant');
 
 exports.getConfig = (req, res, next) => {
-    res.json({
-        "confData": confData
-    })
+    Constant.findAll().then(constants => {
+        res.json({
+            "confData": constants
+        })
+    }).catch();
+
 };
 
 exports.getConfigOne = (req, res, next) => {
-    let single = confData.filter(c => c.type == req.params.type)
-    res.json(single)
+    let type = req.params.type;
+    Constant.findOne({ where: { type: type } })
+        .then(result => {
+            res.json({ constant: result });
+        })
+        .catch(err => console.log(err));
 };
 
 exports.setConfigOne = (req, res, next) => {
-    let inx = confData.findIndex(c => c.type == req.params.type);
-    confData[inx].pumpTime = req.query.pumpTime;
-    confData[inx].value = req.query.value;
-    confData[inx].recheckTimeout = req.query.recheckTimeout;
-    res.json(req.query)
+    let type = req.params.type;
+    let constant = req.query;
+    Constant.findOne({ where: { type: type } })
+        .then(c => {
+            c.pumpTime = constant.pumpTime;
+            c.value = constant.value;
+            c.name = constant.name;
+            c.recheckTimeout = constant.recheckTimeout;
+            return c.save();
+        })
+        .then(result => {
+            res.json({ constant: result });
+        })
+        .catch(err => console.log(err));
 };
