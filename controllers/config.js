@@ -29,6 +29,14 @@ exports.getConfig = (req, res, next) => {
 };
 
 exports.getConfigOne = (req, res, next) => {
-    let single = confData.filter(c=> c.type == req.params.type)
+    let single = confData.filter(c => c.type == req.params.type)
     res.json(single)
+};
+
+exports.setConfigOne = (req, res, next) => {
+    let inx = confData.findIndex(c => c.type == req.params.type);
+    confData[inx].pumpTime = req.query.pumpTime;
+    confData[inx].value = req.query.value;
+    confData[inx].recheckTimeout = req.query.recheckTimeout;
+    res.json(req.query)
 };
