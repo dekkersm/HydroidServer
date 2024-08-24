@@ -1,258 +1,139 @@
-const phdata = [
-    {
-        "id": 6,
-        "value": "7",
-        "date": "1723901464564",
-        "phUpOn": true,
-        "phDownOn": true
-    }, {
-        "id": 5,
-        "value": "7.2",
-        "date": "1723901364564",
-        "phUpOn": false,
-        "phDownOn": true
-    }, {
-        "id": 4,
-        "value": "7.1",
-        "date": "1723901264564",
-        "phUpOn": false,
-        "phDownOn": false
-    }, {
-        "id": 3,
-        "value": "7.6",
-        "date": "1723901164564",
-        "phUpOn": false,
-        "phDownOn": false
-    }, {
-        "id": 2,
-        "value": "7.8",
-        "date": "1723901064564",
-        "phUpOn": true,
-        "phDownOn": false
-    }, {
-        "id": 1,
-        "value": "6.5",
-        "date": "1723900964564",
-        "phUpOn": true,
-        "phDownOn": false
-    }
-]
 
-const tdsData = [
-    {
-        "id": 6,
-        "value": "1252",
-        "date": "1723901464564",
-        "pumpOn": false
-    }, {
-        "id": 5,
-        "value": "1325",
-        "date": "1723901364564",
-        "pumpOn": true
-    }, {
-        "id": 4,
-        "value": "1245",
-        "date": "1723901264564",
-        "pumpOn": true
-    }, {
-        "id": 3,
-        "value": "1365",
-        "date": "1723901164564",
-        "pumpOn": false
-    }, {
-        "id": 2,
-        "value": "998",
-        "date": "1723901064564",
-        "pumpOn": false
-    }, {
-        "id": 1,
-        "value": "1023",
-        "date": "1723900964564",
-        "pumpOn": false
-    }
-]
+const Sequelize = require('sequelize');
 
-const waterData = [
-    {
-        "id": 6,
-        "tempValue": "22.3",
-        "date": "1723901464564",
-        "fillOn": false,
-        "pumpOn": false
-    }, {
-        "id": 5,
-        "tempValue": "22.4",
-        "date": "1723901364564",
-        "fillOn": true,
-        "pumpOn": true
-    }, {
-        "id": 4,
-        "tempValue": "22.5",
-        "date": "1723901264564",
-        "fillOn": true,
-        "pumpOn": true
-    }, {
-        "id": 3,
-        "tempValue": "22.4",
-        "date": "1723901164564",
-        "fillOn": false,
-        "pumpOn": true
-    }, {
-        "id": 2,
-        "tempValue": "22.3",
-        "date": "1723901064564",
-        "fillOn": false,
-        "pumpOn": true
-    }, {
-        "id": 1,
-        "tempValue": "22.2",
-        "date": "1723900964564",
-        "fillOn": false,
-        "pumpOn": true
-    }
-]
-
-const envData = [
-    {
-        "id": 6,
-        "tempValue": "22.3",
-        "lightValue": "80",
-        "humidityValue": "60",
-        "co2Value": "4",
-        "baroValue": "1023.2",
-        "date": "1723901464564",
-        "lightOn": false,
-        "coolingOn": false,
-        "heatOn": false,
-        "co2On": false
-    }, {
-        "id": 5,
-        "tempValue": "22.4",
-        "lightValue": "80",
-        "humidityValue": "60",
-        "co2Value": "4",
-        "baroValue": "1023.2",
-        "date": "1723901364564",
-        "lightOn": false,
-        "coolingOn": false,
-        "heatOn": false,
-        "co2On": false
-    }, {
-        "id": 4,
-        "tempValue": "22.5",
-        "lightValue": "80",
-        "humidityValue": "60",
-        "co2Value": "4",
-        "baroValue": "1023.2",
-        "date": "1723901264564",
-        "lightOn": false,
-        "coolingOn": false,
-        "heatOn": false,
-        "co2On": false
-    }, {
-        "id": 3,
-        "tempValue": "22.4",
-        "lightValue": "80",
-        "humidityValue": "60",
-        "co2Value": "4",
-        "baroValue": "1023.2",
-        "date": "1723901164564",
-        "lightOn": false,
-        "coolingOn": false,
-        "heatOn": false,
-        "co2On": false
-    }, {
-        "id": 2,
-        "tempValue": "22.3",
-        "lightValue": "80",
-        "humidityValue": "60",
-        "co2Value": "4",
-        "baroValue": "1023.2",
-        "date": "1723901064564",
-        "lightOn": false,
-        "coolingOn": false,
-        "heatOn": false,
-        "co2On": false
-    }, {
-        "id": 1,
-        "tempValue": "22.2",
-        "lightValue": "80",
-        "humidityValue": "60",
-        "co2Value": "4",
-        "baroValue": "1023.2",
-        "date": "1723900964564",
-        "lightOn": false,
-        "coolingOn": false,
-        "heatOn": false,
-        "co2On": false
-    }
-]
-
+const phdata = require('../models/phSensorData');
+const tdsData = require('../models/tdsSensorData');
+const waterData = require('../models/waterSensorData');
+const envData = require('../models/envSensorData');
 
 exports.getPhCurrent = (req, res, next) => {
-    res.json(
-        phdata.reduce((a, b) => a.id > b.id ? a : b)
-    )
+    phdata.findAll({
+        limit: 1,
+        order: [['createdAt', 'DESC']]
+    }).then(entries => {
+        res.json(entries[0]);
+    })
 };
 
 exports.getPhHistory = (req, res, next) => {
-    let filteredData = phdata;
-    if (req.query.from) {
-        let to = req.query.to ? req.query.to : new Date().getTime();
-        filteredData.filter(d => d.date > req.query.from && d.date < to);
+    let endDate = req.query.to ? new Date(req.query.to) : new Date();
+    let startDate = req.query.from ? new Date(req.query.from) : new Date(new Date() - 24 * 60 * 60 * 1000);
+    if (req.query.from || req.query.to) {
+        phdata.findAll({
+            where: {
+                createdAt: {
+                    [Sequelize.Op.between]: [startDate, endDate]
+                }
+            }
+        })
+            .then(result => {
+                res.json({ phData: result });
+            })
+            .catch(err => console.log(err));
+    } else {
+        phdata.findAll()
+            .then(result => {
+                res.json({ phData: result });
+            })
+            .catch(err => console.log(err));
     }
-    res.json({
-        "phData": filteredData
-    })
 };
 
 exports.getTdsCurrent = (req, res, next) => {
-    res.json(
-        tdsData.reduce((a, b) => a.id > b.id ? a : b)
-    )
+    tdsData.findAll({
+        limit: 1,
+        order: [['createdAt', 'DESC']]
+    }).then(entries => {
+        res.json(entries[0]);
+    })
 };
 
 exports.getTdsHistory = (req, res, next) => {
-    let filteredData = tdsData;
-    if (req.query.from) {
-        let to = req.query.to ? req.query.to : new Date().getTime();
-        filteredData.filter(d => d.date > req.query.from && d.date < to);
+    let endDate = req.query.to ? new Date(req.query.to) : new Date();
+    let startDate = req.query.from ? new Date(req.query.from) : new Date(new Date() - 24 * 60 * 60 * 1000);
+    if (req.query.from || req.query.to) {
+        tdsData.findAll({
+            where: {
+                createdAt: {
+                    [Sequelize.Op.between]: [startDate, endDate]
+                }
+            }
+        })
+            .then(result => {
+                res.json({ tdsData: result });
+            })
+            .catch(err => console.log(err));
+    } else {
+        tdsData.findAll()
+            .then(result => {
+                res.json({ tdsData: result });
+            })
+            .catch(err => console.log(err));
     }
-    res.json({
-        "tdsData": filteredData
-    })
 };
 
 exports.getWaterCurrent = (req, res, next) => {
-    res.json(
-        waterData.reduce((a, b) => a.id > b.id ? a : b)
-    )
+    waterData.findAll({
+        limit: 1,
+        order: [['createdAt', 'DESC']]
+    }).then(entries => {
+        res.json(entries[0]);
+    })
 };
 
 exports.getWaterHistory = (req, res, next) => {
-    let filteredData = waterData;
-    if (req.query.from) {
-        let to = req.query.to ? req.query.to : new Date().getTime();
-        filteredData.filter(d => d.date > req.query.from && d.date < to);
+    let endDate = req.query.to ? new Date(req.query.to) : new Date();
+    let startDate = req.query.from ? new Date(req.query.from) : new Date(new Date() - 24 * 60 * 60 * 1000);
+    if (req.query.from || req.query.to) {
+        waterData.findAll({
+            where: {
+                createdAt: {
+                    [Sequelize.Op.between]: [startDate, endDate]
+                }
+            }
+        })
+            .then(result => {
+                res.json({ waterData: result });
+            })
+            .catch(err => console.log(err));
+    } else {
+        waterData.findAll()
+            .then(result => {
+                res.json({ waterData: result });
+            })
+            .catch(err => console.log(err));
     }
-    res.json({
-        "waterData": filteredData
-    })
 };
 
 exports.getEnvCurrent = (req, res, next) => {
-    res.json(
-        envData.reduce((a, b) => a.id > b.id ? a : b)
-    )
+    envData.findAll({
+        limit: 1,
+        order: [['createdAt', 'DESC']]
+    }).then(entries => {
+        res.json(entries[0]);
+    })
 };
 
 exports.getEnvHistory = (req, res, next) => {
-    let filteredData = envData;
-    if (req.query.from) {
-        let to = req.query.to ? req.query.to : new Date().getTime();
-        filteredData.filter(d => d.date > req.query.from && d.date < to);
+    let endDate = req.query.to ? new Date(req.query.to) : new Date();
+    let startDate = req.query.from ? new Date(req.query.from) : new Date(new Date() - 24 * 60 * 60 * 1000);
+    if (req.query.from || req.query.to) {
+        envData.findAll({
+            where: {
+                createdAt: {
+                    [Sequelize.Op.between]: [startDate, endDate]
+                }
+            }
+        })
+            .then(result => {
+                res.json({ envData: result });
+            })
+            .catch(err => console.log(err));
+    } else {
+        envData.findAll()
+            .then(result => {
+                res.json({ envData: result });
+            })
+            .catch(err => console.log(err));
     }
-    res.json({
-        "envData": filteredData
-    })
 };
