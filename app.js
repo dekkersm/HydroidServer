@@ -5,6 +5,7 @@ const sequelize = require('./util/database');
 const adminRoutes = require('./routes/admin');
 const dashboardRoutes = require('./routes/dashboard');
 const configRouts = require('./routes/config');
+const authRoutes = require('./routes/auth');
 const bodyParser = require('body-parser');
 
 const app = express();
@@ -28,6 +29,7 @@ app.use((req, res, next) => {
 
 app.use(dashboardRoutes);
 app.use(configRouts);
+app.use('/auth',authRoutes);
 
 sequelize.sync()
   .then(result => {
