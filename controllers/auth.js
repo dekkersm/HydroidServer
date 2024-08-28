@@ -113,7 +113,7 @@ exports.register = async (req, res, next) => {
 
     const createdUser = new User({
         username,
-        password: hashedPw,
+        password: password,
         isChangePassword: true,
         enabled: true,
         name,
@@ -152,7 +152,8 @@ exports.updatePassword = async (req, res, next) => {
 
     let isValidPw = false;
     try {
-        isValidPw = await bcrypt.compare(password, existingUser.password);
+        isValidPw = password == existingUser.password;
+        // isValidPw = await bcrypt.compare(password, existingUser.password);
     } catch (err) {
         return next(new HttpError('password change failed, please try again later.', 500));
     }
@@ -166,7 +167,8 @@ exports.updatePassword = async (req, res, next) => {
 
     let hashedPw;
     try {
-        hashedPw = await bcrypt.hash(newPassword, 12);
+        hashedPw = newPassword, 12;
+        // hashedPw = await bcrypt.hash(newPassword, 12);
     } catch (err) {
         return next(new HttpError('password change failed, please try again later2', 500));
     }
